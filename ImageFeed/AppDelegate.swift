@@ -1,9 +1,4 @@
-//
-//  AppDelegate.swift
-//  ImageFeed
-//
-//  Created by Maria Reshetnikova on 5.01.26.
-//
+
 
 import UIKit
 
