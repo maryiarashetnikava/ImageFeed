@@ -8,7 +8,7 @@ final class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     
     private let photoNames = (0..<20).map(String.init)
-  
+    
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()

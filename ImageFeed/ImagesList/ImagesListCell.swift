@@ -14,5 +14,5 @@ final class ImagesListCell: UITableViewCell {
         pictureImageView.layer.cornerRadius = 16
         pictureImageView.layer.masksToBounds = true
     }
-
+    
 }
