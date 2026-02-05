@@ -31,7 +31,7 @@ final class OAuth2Service {
         code: String,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-            
+        
         guard let request = makeOAuthTokenRequest(code: code) else {
             completion(.failure(NetworkError.invalidRequest))
             return
@@ -51,21 +51,21 @@ final class OAuth2Service {
                     tokenStorage.token = accessToken
                     
                     completion(.success(accessToken))
-
+                    
                 } catch {
                     print("OAuth token decoding error:", error)
                     completion(.failure(error))
                 }
-
+                
             case .failure(let error):
                 print("OAuth token request error:", error)
                 completion(.failure(error))
-
+                
             }
         }
-
+        
         task.resume()
     }
-
-
+    
+    
 }

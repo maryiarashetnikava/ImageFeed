@@ -36,26 +36,27 @@ final class AuthViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "ypBlack") 
     }
-
+    
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true)
         
         oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
             guard let self else { return }
             
             switch result {
             case .success:
+                vc.dismiss(animated: true)
                 self.delegate?.didAuthenticate(self)
                 
             case .failure(let error):
+                vc.dismiss(animated: true)
                 print("OAuth token fetch error:", error)
             }
         }
     }
-
+    
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
     }
