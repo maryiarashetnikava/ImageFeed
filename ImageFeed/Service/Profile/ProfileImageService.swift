@@ -14,7 +14,7 @@ struct ProfileImage: Codable {
 
 struct UserResult: Codable {
     let profileImage: ProfileImage
-
+    
 }
 
 final class ProfileImageService {

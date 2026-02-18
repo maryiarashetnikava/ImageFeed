@@ -176,12 +176,7 @@ final class ProfileViewController: UIViewController {
         : profile.bio
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
-        avatarImageView.clipsToBounds = true
-    }
+
     
 
     // MARK: - Actions

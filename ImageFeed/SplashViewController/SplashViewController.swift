@@ -16,7 +16,6 @@ final class SplashViewController: UIViewController {
         setupImageView()
         
         if let token = storage.token {
-            switchToTabBarController()
             fetchProfile(token: token)
         } else {
             presentAuthViewController()
@@ -74,15 +73,19 @@ final class SplashViewController: UIViewController {
             UIBlockingProgressHUD.show()
         
         profileService.fetchProfile(token) { [weak self] result in
-            UIBlockingProgressHUD.dismiss()
             
             guard let self = self else { return }
             
             switch result {
             case .success(let profile):
-                profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
+                profileImageService.fetchProfileImageURL(username: profile.username) { _ in
+                    DispatchQueue.main.async {
+                        UIBlockingProgressHUD.dismiss()
                         self.switchToTabBarController()
+                    }
+                }
             case .failure(let error):
+                UIBlockingProgressHUD.dismiss()
                 print("[SplashViewController.fetchProfile]: \(error)")
                 break
             }
