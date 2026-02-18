@@ -6,11 +6,12 @@ enum AuthServiceError: Error {
 
 final class OAuth2Service {
     static let shared = OAuth2Service()
+    
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastCode: String?
     
-    private let dataStorage = OAuth2TokenStorage()
+    private let dataStorage = OAuth2TokenStorage.shared
     
     
     private(set) var authToken: String? {
@@ -66,7 +67,6 @@ final class OAuth2Service {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             DispatchQueue.main.async {
-                UIBlockingProgressHUD.dismiss()
                 guard let self = self else { return }
                 
                 switch result {
@@ -76,7 +76,7 @@ final class OAuth2Service {
                     completion(.success(authToken))
                     
                 case .failure(let error):
-                    print("[fetchOAuthToken]: Request error: \(error.localizedDescription)")
+                    print("[OAuth2Service.fetchOAuthToken]: Request error: \(error.localizedDescription)")
                     completion(.failure(error))
                     
                 }
