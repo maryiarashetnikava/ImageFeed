@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -10,6 +11,9 @@ final class ProfileViewController: UIViewController {
     private let descriptionLabel = UILabel()
     private let logoutButton = UIButton()
     
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -19,6 +23,68 @@ final class ProfileViewController: UIViewController {
         configureUI()
         addSubviews()
         setupConstraints()
+        
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        
+        print("imageUrl: \(url)")
+        
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: placeholderImage,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage,
+                .forceRefresh
+            ]) { result in
+                
+                switch result {
+                case .success(let value):
+                    print(value.image)
+                    print(value.cacheType)
+                    print(value.source)
+                    
+                case .failure(let error):
+                    print(error)
+                }
+            }
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name.isEmpty
+        ? "Имя не указано"
+        : profile.name
+        loginNameLabel.text = profile.loginName.isEmpty
+        ? "@неизвестный_пользователь"
+        : profile.loginName
+        descriptionLabel.text = (profile.bio?.isEmpty ?? true)
+        ? "Профиль не заполнен"
+        : profile.bio
     }
     
     override func viewDidLayoutSubviews() {
@@ -94,6 +160,7 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Actions
+    
     
     @objc
     private func didTapLogoutButton() {
