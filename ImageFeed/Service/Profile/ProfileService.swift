@@ -9,16 +9,8 @@ struct Profile {
 
 struct ProfileResult: Codable {
     let username: String
-    let firstName: String
-    let lastName: String
+    let name: String?
     let bio: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case username
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case bio
-    }
     
 }
 
@@ -43,8 +35,7 @@ final class ProfileService {
             case .success(let result):
                 let profile = Profile(
                     username: result.username,
-                    name: "\(result.firstName) \(result.lastName)"
-                        .trimmingCharacters(in: .whitespaces),
+                    name: result.name ?? "",
                     loginName: "@\(result.username)",
                     bio: result.bio
                 )

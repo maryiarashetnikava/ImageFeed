@@ -14,10 +14,7 @@ struct ProfileImage: Codable {
 
 struct UserResult: Codable {
     let profileImage: ProfileImage
-    
-    private enum CodingKeys: String, CodingKey {
-        case profileImage = "profile_image"
-    }
+
 }
 
 final class ProfileImageService {
@@ -31,8 +28,9 @@ final class ProfileImageService {
     private(set) var avatarURL: String?
     private var task: URLSessionTask?
     
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
+
         
         guard let token = storage.token else {
             completion(.failure(NSError(domain: "ProfileImageService", code: 401, userInfo: [NSLocalizedDescriptionKey: "Authorization token missing"])))
@@ -57,7 +55,7 @@ final class ProfileImageService {
                         object: self,
                         userInfo: ["URL": self.avatarURL ?? ""]
                     )
-                
+
             case .failure(let error):
                 print("[fetchProfileImageURL]: Request error: \(error.localizedDescription)")
                 completion(.failure(error))
