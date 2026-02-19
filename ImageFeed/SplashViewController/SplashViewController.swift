@@ -26,19 +26,19 @@ final class SplashViewController: UIViewController {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
     }
-
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
     private func setupImageView() {
         let imageSplashScreenLogo = UIImage(named: "Vector")
-
+        
         imageView = UIImageView(image: imageSplashScreenLogo)
-
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-
+        
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -70,22 +70,19 @@ final class SplashViewController: UIViewController {
     
     
     private func fetchProfile(token: String) {
-            UIBlockingProgressHUD.show()
+        UIBlockingProgressHUD.show()
         
         profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             
             guard let self = self else { return }
             
+            
             switch result {
             case .success(let profile):
-                profileImageService.fetchProfileImageURL(username: profile.username) { _ in
-                    DispatchQueue.main.async {
-                        UIBlockingProgressHUD.dismiss()
-                        self.switchToTabBarController()
-                    }
-                }
+                profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
+                self.switchToTabBarController()
             case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
                 print("[SplashViewController.fetchProfile]: \(error)")
                 break
             }

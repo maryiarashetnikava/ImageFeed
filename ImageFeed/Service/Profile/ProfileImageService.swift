@@ -4,12 +4,6 @@ struct ProfileImage: Codable {
     let small: String
     let medium: String
     let large: String
-    
-    private enum CodingKeys: String, CodingKey {
-        case small
-        case medium
-        case large
-    }
 }
 
 struct UserResult: Codable {
@@ -18,7 +12,7 @@ struct UserResult: Codable {
 }
 
 final class ProfileImageService {
-    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
     
     private let storage = OAuth2TokenStorage.shared
     static let shared = ProfileImageService()
@@ -30,7 +24,7 @@ final class ProfileImageService {
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
-
+        
         
         guard let token = storage.token else {
             completion(.failure(NSError(domain: "ProfileImageService", code: 401, userInfo: [NSLocalizedDescriptionKey: "Authorization token missing"])))
@@ -55,7 +49,7 @@ final class ProfileImageService {
                         object: self,
                         userInfo: ["URL": self.avatarURL ?? ""]
                     )
-
+                
             case .failure(let error):
                 print("[fetchProfileImageURL]: Request error: \(error.localizedDescription)")
                 completion(.failure(error))
