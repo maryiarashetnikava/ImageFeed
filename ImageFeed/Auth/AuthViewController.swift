@@ -1,4 +1,5 @@
 import UIKit
+import ProgressHUD
 
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: AuthViewController)
@@ -34,7 +35,7 @@ final class AuthViewController: UIViewController {
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = UIColor(named: "ypBlack") 
+        navigationItem.backBarButtonItem?.tintColor = UIColor(resource: .ypBlack)
     }
     
 }
@@ -42,7 +43,11 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         
-        oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
+        UIBlockingProgressHUD.show()
+        
+        oauth2Service.fetchOAuthToken(code) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
             guard let self else { return }
             
             switch result {
@@ -51,13 +56,27 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 self.delegate?.didAuthenticate(self)
                 
             case .failure(let error):
+                print("OAuth token fetch error: \(error.localizedDescription)")
+                
                 vc.dismiss(animated: true)
-                print("OAuth token fetch error:", error)
+                self.showAuthErrorAlert()
             }
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
+    }
+}
+extension AuthViewController {
+    func showAuthErrorAlert() {
+        let alertController = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        let okAction = UIAlertAction(title: "Ок", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
