@@ -7,8 +7,7 @@ final class ImagesListViewController: UIViewController {
     
     @IBOutlet private var tableView: UITableView!
     
-    private let photoNames = (0..<20).map(String.init)
-    
+    private let imagesListService = ImagesListService()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -34,7 +33,7 @@ final class ImagesListViewController: UIViewController {
                 return
             }
             
-            let image = UIImage(named: photoNames[indexPath.row])
+            let image = UIImage(named: imagesListService.photos[indexPath.row])
             viewController.image = image
         } else {
             super.prepare(for: segue, sender: sender)
@@ -47,7 +46,7 @@ extension ImagesListViewController: UITableViewDelegate {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: photoNames[indexPath.row]) else {
+        guard let image = UIImage(named: imagesListService.photos[indexPath.row]) else {
             return 0
         }
         
@@ -59,11 +58,17 @@ extension ImagesListViewController: UITableViewDelegate {
         return cellHeight
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == imagesListService.photos.count {
+            imagesListService.fetchPhotosNextPage()
+        }
+    }
+    
 }
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photoNames.count
+        return imagesListService.photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -81,7 +86,7 @@ extension ImagesListViewController: UITableViewDataSource {
 
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: photoNames[indexPath.row]) else {
+        guard let image = UIImage(named: imagesListService.photos[indexPath.row]) else {
             return
         }
         
