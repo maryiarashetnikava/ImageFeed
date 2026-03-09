@@ -183,6 +183,15 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func didTapLogoutButton() {
+        ProfileLogoutService.shared.logout()
+        
+        guard let window = UIApplication.shared.windows.first else {
+               assertionFailure("Invalid window configuration")
+               return
+           }
+           
+           let splashViewController = SplashViewController()
+           window.rootViewController = splashViewController
         
     }
 }

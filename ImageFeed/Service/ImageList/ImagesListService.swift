@@ -7,7 +7,7 @@ struct PhotoResult: Decodable {
     let width: Int
     let height: Int
     let description: String?
-    let likedByUser: Bool
+    let likedByUser: Bool?
     let urls: UrlsResult
     
     enum CodingKeys: String, CodingKey {
@@ -53,9 +53,9 @@ final class ImagesListService {
         guard task == nil else { return }
         
         guard let token = tokenStorage.token else {
-              print("No token")
-              return
-          }
+            print("[ImagesListService]: token is missing")
+            return
+        }
         
         let nextPage = (lastLoadedPage ?? 0) + 1
         
@@ -107,6 +107,61 @@ final class ImagesListService {
         return request
     }
     
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let token = tokenStorage.token else {
+            print("[ImagesListService]: token is missing")
+            return
+        }
+        
+        let urlString = "https://api.unsplash.com/photos/\(photoId)/like"
+        
+        guard let url = URL(string: urlString) else {
+            print("[ImagesListService]: invalid URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? "POST" : "DELETE"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.data(for: request) { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .success:
+
+                    if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+
+                        let photo = self.photos[index]
+
+                        let newPhoto = Photo(
+                            id: photo.id,
+                            size: photo.size,
+                            createdAt: photo.createdAt,
+                            welcomeDescription: photo.welcomeDescription,
+                            thumbImageURL: photo.thumbImageURL,
+                            largeImageURL: photo.largeImageURL,
+                            isLiked: !photo.isLiked
+                        )
+
+                        self.photos = self.photos.withReplaced(
+                            itemAt: index,
+                            newValue: newPhoto
+                        )
+                    }
+
+                    completion(.success(()))
+
+                case .failure(let error):
+                    print("[ImagesListService]: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+
+            task.resume()
+        }
+    
+    
     private func convert(result: PhotoResult) -> Photo {
         let date: Date?
         
@@ -124,7 +179,8 @@ final class ImagesListService {
             welcomeDescription: result.description,
             thumbImageURL: result.urls.thumb,
             largeImageURL: result.urls.full,
-            isLiked: result.likedByUser
+            isLiked: result.likedByUser ?? false
         )
     }
+    
 }

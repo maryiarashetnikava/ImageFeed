@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D33E91E2F4338B700F048C9 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 0D33E91D2F4338B700F048C9 /* SwiftKeychainWrapper */; };
+		0DC0BC292F55A6AC00EF5614 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC0BC282F55A6A200EF5614 /* Array+Extensions.swift */; };
 		0DD46BAB2F3E0D9D0022F8CC /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD46BAA2F3E0D9D0022F8CC /* Kingfisher */; };
 		0DE535A32F36168100154056 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 0DE535A22F36168100154056 /* ProgressHUD */; };
 		0DE9E43F2F2B8CA700768161 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE9E43E2F2B8CA700768161 /* WebKit.framework */; };
@@ -15,6 +16,7 @@
 
 /* Begin PBXFileReference section */
 		0D04FB9C2F0E95360004AB1A /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DC0BC282F55A6A200EF5614 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		0DE9E43E2F2B8CA700768161 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -57,6 +59,7 @@
 		0D04FB932F0E95360004AB1A = {
 			isa = PBXGroup;
 			children = (
+				0DC0BC282F55A6A200EF5614 /* Array+Extensions.swift */,
 				0D04FB9E2F0E95360004AB1A /* ImageFeed */,
 				0DE9E43D2F2B8CA700768161 /* Frameworks */,
 				0D04FB9D2F0E95360004AB1A /* Products */,
@@ -161,6 +164,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DC0BC292F55A6AC00EF5614 /* Array+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
