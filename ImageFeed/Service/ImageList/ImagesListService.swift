@@ -44,6 +44,8 @@ final class ImagesListService {
     
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
+    private let isoFormatter = ISO8601DateFormatter()
+    
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
@@ -166,8 +168,7 @@ final class ImagesListService {
         let date: Date?
         
         if let createdAtString = result.createdAt {
-            let formatter = ISO8601DateFormatter()
-            date = formatter.date(from: createdAtString)
+            date = isoFormatter.date(from: createdAtString)
         } else {
             date = nil
         }
