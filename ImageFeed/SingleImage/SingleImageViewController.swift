@@ -1,16 +1,11 @@
 
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage? {
-        didSet {
-            guard isViewLoaded, let image else { return }
-            
-            imageView.image = image
-            imageView.frame.size = image.size
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+    var imageURL: String?
+    private var loadedImage: UIImage?
+    
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
     
@@ -19,10 +14,28 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
-        guard let image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+        guard let imageURL = imageURL,
+              let url = URL(string: imageURL)
+        else { return }
+        
+        UIBlockingProgressHUD.show()
+
+        imageView.kf.setImage(with: url) { [weak self] result in
+            guard let self = self else { return }
+            
+            UIBlockingProgressHUD.dismiss()
+            
+            switch result {
+            case .success(let value):
+                let image = value.image
+                self.loadedImage = image
+                self.imageView.frame.size = image.size
+                self.rescaleAndCenterImageInScrollView(image: image)
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     @IBAction func didTapBackButton(_ sender: Any) {
@@ -30,7 +43,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction func didTapShareButton(_ sender: Any) {
-        guard let image else { return }
+        guard let image = loadedImage else { return }
         let share = UIActivityViewController(
             activityItems: [image],
             applicationActivities: nil
