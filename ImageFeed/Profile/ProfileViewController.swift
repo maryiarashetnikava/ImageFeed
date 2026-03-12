@@ -11,6 +11,8 @@ final class ProfileViewController: UIViewController {
     
     private let logoutButton = UIButton(type: .system)
     
+    private var animationLayers = Set<CALayer>()
+    
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -31,9 +33,18 @@ final class ProfileViewController: UIViewController {
             ) { [weak self] _ in
                 guard let self = self else { return }
                 self.updateAvatar()
+                self.removeGradientLayers()
             }
         updateAvatar()
         
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if animationLayers.isEmpty && profileService.profile == nil {
+            showSkeleton()
+        }
     }
     
     
@@ -179,6 +190,60 @@ final class ProfileViewController: UIViewController {
         : profile.bio
     }
     
+    private func showSkeleton() {
+        addGradientLayer(to: avatarImageView)
+        addGradientLayer(to: nameLabel)
+        addGradientLayer(to: loginNameLabel)
+        addGradientLayer(to: descriptionLabel)
+    }
+    
+    private func addGradientLayer(to view: UIView) {
+        let gradient = CAGradientLayer()
+        
+        if view === avatarImageView {
+            gradient.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+            gradient.cornerRadius = 35
+        } else {
+            gradient.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: view.bounds.width + 40,
+                height: view.bounds.height
+            )
+            gradient.cornerRadius = view.bounds.height / 2
+        }
+        
+        gradient.masksToBounds = true
+        
+        gradient.locations = [0, 0.1, 0.3]
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+            UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+        ]
+        
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        
+        view.layer.addSublayer(gradient)
+        animationLayers.insert(gradient)
+        
+        let animation = CABasicAnimation(keyPath: "locations")
+        animation.duration = 1.0
+        animation.repeatCount = .infinity
+        animation.fromValue = [0, 0.1, 0.3]
+        animation.toValue = [0, 0.8, 1]
+        
+        gradient.add(animation, forKey: "locationsChange")
+    }
+    
+    private func removeGradientLayers() {
+        animationLayers.forEach { gradient in
+            gradient.removeFromSuperlayer()
+        }
+        animationLayers.removeAll()
+    }
+    
     // MARK: - Actions
     
     @objc
@@ -212,6 +277,7 @@ final class ProfileViewController: UIViewController {
 
         let splashViewController = SplashViewController()
         window.rootViewController = splashViewController
+
     }
 }
 

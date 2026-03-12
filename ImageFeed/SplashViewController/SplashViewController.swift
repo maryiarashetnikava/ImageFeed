@@ -14,6 +14,7 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
         
         setupImageView()
+
         
         if let token = storage.token {
             fetchProfile(token: token)

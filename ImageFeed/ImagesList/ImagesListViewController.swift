@@ -126,12 +126,15 @@ extension ImagesListViewController {
         
         if let url = URL(string: photo.thumbImageURL) {
             
+            if cell.pictureImageView.image == nil {
+                cell.showSkeleton()
+            }
+            
             cell.pictureImageView.kf.setImage(
                 with: url,
                 placeholder: UIImage(named: "stub_card")
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            ) { _ in
+                cell.removeSkeleton()
             }
         }
     }
