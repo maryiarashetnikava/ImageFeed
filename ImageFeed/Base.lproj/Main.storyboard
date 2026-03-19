@@ -122,6 +122,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fly-XY-P34">
                                 <rect key="frame" x="8" y="67" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="back button"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="2Rz-BL-BGM"/>
                                     <constraint firstAttribute="width" constant="48" id="cq2-2Z-CfM"/>
@@ -204,6 +205,7 @@
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U22-2g-4bW">
                                 <rect key="frame" x="16" y="656" width="361" height="48"/>
                                 <color key="backgroundColor" name="YP White"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="7qD-Tc-dAD"/>
                                     <constraint firstAttribute="width" constant="288" id="tio-oQ-nCk"/>
@@ -243,7 +245,7 @@
         <!--Web View View Controller-->
         <scene sceneID="ExN-Ao-jGi">
             <objects>
-                <viewController id="3G7-0q-Kc7" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="3G7-0q-Kc7" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="HG0-ov-Fer">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
