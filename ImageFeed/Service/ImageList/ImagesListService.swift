@@ -39,7 +39,18 @@ struct Photo {
     let isLiked: Bool
 }
 
-final class ImagesListService {
+protocol ImagesListServiceProtocol {
+    var photos: [Photo] { get }
+    
+    func fetchPhotosNextPage()
+    func changeLike(
+        photoId: String,
+        isLike: Bool,
+        _ completion: @escaping (Result<Void, Error>) -> Void
+    )
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     private(set) var photos: [Photo] = []
     
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
